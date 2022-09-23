@@ -16,3 +16,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.form-group {
+    margin: 20px;
+}
+
+input.form-control {
+    border-color: black;
+}

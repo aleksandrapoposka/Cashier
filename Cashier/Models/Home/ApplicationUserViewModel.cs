@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cashier.Models.Home
 {
-    public class ApplicationUserViewModel
+    public class ApplicationUserViewModel : IValidatableObject
     {
         [Required]
         [MaxLength(200)]
@@ -21,15 +21,27 @@ namespace Cashier.Models.Home
         public string Email { get; set; }
 
         [Required]
+        [DisplayName("Password")]
         public string Password { get; set; }
         
         [Required]
+        [DisplayName("Confirm Password")]
         [Compare("Password", ErrorMessage = "Passwords don't match")]
         public string ConfirmPassword { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
+        [DisplayName("Date of birth")]
         public DateTime DateOfBirth { get; set; }
 
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (DateOfBirth > DateTime.UtcNow.AddYears(-18))
+            {
+                yield return new ValidationResult(
+                $"User must be older than 18 years.",
+                new[] { nameof(DateOfBirth) });
+            }
+        }
     }
 }
