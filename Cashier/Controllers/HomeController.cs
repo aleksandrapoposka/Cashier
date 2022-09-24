@@ -57,11 +57,13 @@ namespace Cashier.Controllers
         {
             if (ModelState.IsValid)
             {
-                //    if (userViewModel.DateOfBirth > DateTime.UtcNow.AddYears(-18))
-                //    {
-                //        userViewModel.Validate(ModelState);
-
-                //    }
+                //add custom error to model state, to check as alternate
+                //if (userViewModel.DateOfBirth > DateTime.UtcNow.AddYears(-18))
+                //{
+                //    ModelState.AddModelError(nameof(userViewModel.DateOfBirth), "User must be older than 18 years.");
+                //    return View(userViewModel);
+                //}
+                
                 //register user
                 var newUser = new ApplicationUser
                 {
@@ -72,16 +74,21 @@ namespace Cashier.Controllers
                     DateOfBirth = userViewModel.DateOfBirth
                 };
                 var result = await _userManager.CreateAsync(newUser, userViewModel.Password);
-                return RedirectToAction("Login", "Home");
+                
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View(userViewModel);
+                }
             } else
-            {
-                //foreach (var modelState in ModelState.Values)
-                //{
-                //    foreach (ModelError error in modelState.Errors)
-                //    {
-                //        userViewModel.
-                //    }
-                //}
+            {               
                 return View(userViewModel);
             }
         }

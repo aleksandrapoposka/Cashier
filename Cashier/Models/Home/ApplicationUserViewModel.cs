@@ -37,11 +37,7 @@ namespace Cashier.Models.Home
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (DateOfBirth > DateTime.UtcNow.AddYears(-18))
-            {
-                yield return new ValidationResult(
-                $"User must be older than 18 years.",
-                new[] { nameof(DateOfBirth) });
-            }
+                yield return new ValidationResult($"User must be older than 18 years.", new[] { nameof(DateOfBirth) });
         }
     }
 }
