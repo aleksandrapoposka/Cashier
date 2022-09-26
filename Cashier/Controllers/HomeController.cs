@@ -123,5 +123,12 @@ namespace Cashier.Controllers
                 return View(userViewModel);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login");
+        }
     }
 }
