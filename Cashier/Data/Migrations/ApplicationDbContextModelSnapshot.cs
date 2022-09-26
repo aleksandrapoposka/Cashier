@@ -47,6 +47,15 @@ namespace Cashier.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
+                            ConcurrencyStamp = "2c5e174e-3b0e-446f-86af-483d56fd7210",
+                            Name = "SuperAdmin",
+                            NormalizedName = "SUPERADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -207,6 +216,13 @@ namespace Cashier.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -246,6 +262,28 @@ namespace Cashier.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e9ac5644-ce29-462e-88ed-695452d9ab11",
+                            Email = "aleksandra@admin.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ALEKSANDRA@ADMIN.COM",
+                            NormalizedUserName = "ALEKSANDRA@ADMIN.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMfT4Mjpq/8i/HjIhL7J0szsVc2pBYpFytLD5c9xsAOSXqScEy9n7bteh1laAdkOpQ==",
+                            PhoneNumber = "077503237",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4b30ab5d-0e95-4beb-84b9-c87650a54ce2",
+                            TwoFactorEnabled = false,
+                            UserName = "aleksandra@admin.com",
+                            DateOfBirth = new DateTime(1995, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Aleksandra",
+                            LastName = "Poposka"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
