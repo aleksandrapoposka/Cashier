@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cashier.Controllers
 {
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize]
     public class RoleManagerController : Controller
     {
         public IActionResult Index()
         {
             return View();
         }
+
     }
 }
