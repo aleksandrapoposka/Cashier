@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cashier.Models.Home
 {
-    public class ApplicationUserViewModel : IValidatableObject
+    public class RegisterUserViewModel : IValidatableObject
     {
         [Required]
         [MaxLength(200)]
@@ -17,7 +17,7 @@ namespace Cashier.Models.Home
 
         [Required]
         [DisplayName("Email")]
-        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required]
