@@ -106,7 +106,7 @@ namespace Cashier.Controllers
                     .PasswordSignInAsync(
                         userViewModel.Email, 
                         userViewModel.Password, 
-                        false, 
+                        userViewModel.RememberMe, 
                         false);
                 
                 if (result.Succeeded)

@@ -14,5 +14,8 @@ namespace Cashier.Models.Home
         [Required]
         [DisplayName("Password")]
         public string Password { get; set; }
+
+        [DisplayName("Remember me")]
+        public bool RememberMe { get; set; }
     }
 }
