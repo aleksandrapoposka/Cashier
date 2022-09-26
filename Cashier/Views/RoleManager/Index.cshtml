@@ -1,1 +1,33 @@
-﻿<h1>We are in role management now</h1>
+﻿@using Microsoft.AspNetCore.Identity
+@model List<IdentityRole>
+
+<h1>Role manager</h1>
+@using (Html.BeginForm("AddRole", "RoleManager", FormMethod.Post))
+{
+    <div class="input-group">
+        <input type="text" name="roleName" class="form-control col-md-3 mr-1" />
+        <span class="input-group-btn col-md-3">
+            <button type="submit" class="btn btn-primary">Add new role</button>
+        </span>
+    </div>
+}
+
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <td>@role.Id</td>
+                    <td>@role.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
