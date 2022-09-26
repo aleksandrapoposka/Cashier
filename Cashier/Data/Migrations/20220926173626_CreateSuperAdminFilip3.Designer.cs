@@ -4,6 +4,7 @@ using Cashier.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cashier.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220926173626_CreateSuperAdminFilip3")]
+    partial class CreateSuperAdminFilip3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,18 +218,6 @@ namespace Cashier.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "8e445865-a24d-4543-a6c6-9443d048cdb1",
-                            RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210"
-                        },
-                        new
-                        {
-                            UserId = "8e445123-a24d-4543-a6c6-9443d048cdc1",
-                            RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -273,41 +263,21 @@ namespace Cashier.Data.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e36e1704-4e3a-43c6-8bfb-e4d941cf6ae4",
+                            ConcurrencyStamp = "728f80d2-919f-4ba1-82f6-8d3b0dbee8d6",
                             Email = "filip@admin.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "FILIP@ADMIN.COM",
                             NormalizedUserName = "FILIP@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAJAtovocbM6MLz9QdfIMJsr0qgPOsIBxVZl/9shtfIQ5VLem8oFdH/hW4tTjs/gyg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELYp9c7y02KsaDpQmJV/HX9KXp1pp1i1v+swwWV+qGdrEBQM/T5uwd05X69ub7x3cQ==",
                             PhoneNumber = "077511123",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "46fef8e6-31f4-4567-88c6-b8bfc263fb58",
+                            SecurityStamp = "5187ac11-76ca-4dd3-b3ea-3af02968fbea",
                             TwoFactorEnabled = false,
                             UserName = "filip@admin.com",
                             DateOfBirth = new DateTime(1995, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Filip",
                             LastName = "Cvetkovski"
-                        },
-                        new
-                        {
-                            Id = "8e445123-a24d-4543-a6c6-9443d048cdc1",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "00a434a4-2b57-4086-b133-7a8a57355752",
-                            Email = "aleksandra@admin.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ALEKSANDRA@ADMIN.COM",
-                            NormalizedUserName = "ALEKSANDRA@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAECMIwm+gyf30L5xtBkVq0hGP7rm2+KjUqhQz9EuOYnfc/fI5dtTVT0FLf4JXQYdtuw==",
-                            PhoneNumber = "077511166",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "96b30cff-c39c-4065-b531-05b895dd8053",
-                            TwoFactorEnabled = false,
-                            UserName = "aleksandra@admin.com",
-                            DateOfBirth = new DateTime(1995, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FirstName = "Aleksandra",
-                            LastName = "Poposka"
                         });
                 });
 
