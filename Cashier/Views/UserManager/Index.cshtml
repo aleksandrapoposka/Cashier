@@ -1,1 +1,28 @@
-﻿
+﻿@using Cashier.Models.UserManager
+@model List<UserRolesViewModel>
+@{
+    ViewBag.Title = "User Manager";
+}
+<h1>@ViewBag.Title</h1>
+<br />
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@string.Join(" , ", user.UserRoles.ToList())</td>
+                <td>
+                    @Html.ActionLink("Manage Role", "Manage", "UserManager", new { userId = @user.UserId }, null)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

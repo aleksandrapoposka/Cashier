@@ -1,4 +1,5 @@
-﻿using Entities.User;
+﻿using Cashier.Models.UserManager;
+using Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,21 @@ namespace Cashier.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var allUsersViewModel = new List<UserRolesViewModel>();
             var users = _userManager.Users.ToList();
-            var roles = _roleManager.Roles.ToList();
-            return View();
+            foreach (var user in users)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var userRolesModel = new UserRolesViewModel
+                {
+                    UserId = user.Id,
+                    Email = user.Email,
+                    UserRoles = new List<string>(userRoles)
+                };
+                allUsersViewModel.Add(userRolesModel);
+            }
+            //var roles = _roleManager.Roles.ToList();
+            return View(allUsersViewModel);
         }
     }
 }
