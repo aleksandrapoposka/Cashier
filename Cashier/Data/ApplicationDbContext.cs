@@ -28,6 +28,26 @@ namespace Cashier.Data
                     ConcurrencyStamp = "2c5e174e-3b0e-446f-86af-483d56fd7210"
                 });
 
+            //create admin role
+            modelBuilder.Entity<IdentityRole>().HasData(
+               new IdentityRole
+               {
+                   Id = "e9bfcae5-cc66-4512-bbeb-7536c527221b",
+                   Name = "Admin",
+                   NormalizedName = "Admin".ToUpper(),
+                   ConcurrencyStamp = "e9bfcae5-cc66-4512-bbeb-7536c527221b"
+               });
+
+            //create cashier role
+            modelBuilder.Entity<IdentityRole>().HasData(
+               new IdentityRole
+               {
+                   Id = "a1fdff5e-9818-4515-9862-fc7a13de65b9",
+                   Name = "Cashier",
+                   NormalizedName = "Cashier".ToUpper(),
+                   ConcurrencyStamp = "a1fdff5e-9818-4515-9862-fc7a13de65b9"
+               });
+
             //create super admin user
             var superAdminFilip = new ApplicationUser
             {

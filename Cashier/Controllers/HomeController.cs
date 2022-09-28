@@ -14,16 +14,19 @@ namespace Cashier.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public HomeController(
             ILogger<HomeController> logger,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager
             )
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
     
 
@@ -80,6 +83,8 @@ namespace Cashier.Controllers
                 
                 if (result.Succeeded)
                 {
+                    var cashierRole = _roleManager.Roles.First(x => x.Name == "Cashier");
+                    await _userManager.AddToRoleAsync(newUser, cashierRole.Name);
                     return RedirectToAction("Login", "Home");
                 }
                 else
