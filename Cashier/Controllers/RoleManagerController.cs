@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Cashier.Controllers
@@ -27,12 +28,14 @@ namespace Cashier.Controllers
 
             if (string.IsNullOrEmpty(roleName))
             {
+                ModelState.AddModelError("RoleName", "Role name is required");
                 return View("Index", roles);
             }
 
             //validate if role exists
             if (roles.Any(x => x.Name.ToLower() == roleName.ToLower()))
             {
+                ModelState.AddModelError("RoleName", "Role already exists");
                 return View("Index", roles);
             }
 
@@ -41,6 +44,7 @@ namespace Cashier.Controllers
                 Name = roleName,
                 NormalizedName = roleName.ToUpper()
             });
+            
             if (result.Succeeded)
             {
                 roles = _roleManager.Roles.ToList();
@@ -49,6 +53,8 @@ namespace Cashier.Controllers
             else
             {
                 //add error handling
+                ModelState.AddModelError("RoleName", String.Join(", ", result.Errors));
+                return View("Index", roles);
             }
 
             return View("Index", roles);
