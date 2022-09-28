@@ -37,5 +37,34 @@ namespace Cashier.Controllers
             //var roles = _roleManager.Roles.ToList();
             return View(allUsersViewModel);
         }
+        
+        public async Task<IActionResult> Manage(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                //return error
+            }
+            var user = _userManager.Users.FirstOrDefault(x => x.Id == userId);
+            if (user == null) 
+            { 
+                //return error
+            }
+            var allRolesViewModel = new List<ManageUserRolesViewModel>();
+            var allRoles = _roleManager.Roles.ToList();
+            foreach (var role in allRoles)
+            {
+                var roleViewModel = new ManageUserRolesViewModel
+                {
+                    RoleId = role.Id,
+                    RoleName = role.Name,
+                    IsSelected = await _userManager.IsInRoleAsync(user, role.Name)
+                };
+                allRolesViewModel.Add(roleViewModel);
+            }
+            ViewBag.UserId = userId;
+            ViewBag.Username = user.UserName;
+
+            return View(allRolesViewModel);
+        }
     }
 }
