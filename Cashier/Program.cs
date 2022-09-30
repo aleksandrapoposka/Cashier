@@ -2,6 +2,11 @@ using Cashier.Data;
 using Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using NLog.Web;
+
+var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Debug("init main");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +24,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
             .AddDefaultUI()
             .AddDefaultTokenProviders();
 builder.Services.AddControllersWithViews();
+
+// NLog: Setup NLog for Dependency injection
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
 
 var app = builder.Build();
 
