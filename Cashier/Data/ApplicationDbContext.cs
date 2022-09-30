@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Entities.Articles;
 
 namespace Cashier.Data
 {
@@ -13,6 +14,7 @@ namespace Cashier.Data
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Article> Articles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -96,6 +98,8 @@ namespace Cashier.Data
                     RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210",
                     UserId = "8e445123-a24d-4543-a6c6-9443d048cdc1"
                 });
+
+            modelBuilder.Entity<Article>().HasKey(x => x.Id);
         }
     }
 }
