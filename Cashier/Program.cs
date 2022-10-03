@@ -1,5 +1,9 @@
 using Cashier.Data;
+using DataAccess.Data;
+using Entities.Articles;
 using Entities.User;
+using InfrastructureSql.Concrete;
+using InfrastructureSql.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
@@ -24,6 +28,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
             .AddDefaultUI()
             .AddDefaultTokenProviders();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
 
 // NLog: Setup NLog for Dependency injection
 builder.Logging.ClearProviders();

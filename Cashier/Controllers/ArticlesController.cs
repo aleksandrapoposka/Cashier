@@ -1,7 +1,10 @@
 ﻿using Cashier.Data;
 using Cashier.Helpers;
 using Cashier.Models.Articles;
+using DataAccess.Data;
 using Entities.Articles;
+using InfrastructureSql.Concrete;
+using InfrastructureSql.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,14 +15,14 @@ namespace Cashier.Controllers
     public class ArticlesController : Controller
     {
         private readonly ILogger<ArticlesController> _logger;
-        private readonly ApplicationDbContext _applicationDbContext;
+        private readonly IRepository<Article> _articleRepository;
         
         public ArticlesController(
             ILogger<ArticlesController> logger,
-            ApplicationDbContext applicationDbContext)
+            IRepository<Article> articleRepository)
         {
             _logger = logger;
-            _applicationDbContext = applicationDbContext;
+            _articleRepository = articleRepository;
         }
         
         public IActionResult Index()
@@ -31,7 +34,7 @@ namespace Cashier.Controllers
         public async Task<IActionResult> GetAllArticles()
         {
             _logger.LogInformation("ArticlesController.GetAllArticles");
-            var articles = _applicationDbContext.Articles.ToList();
+            var articles = await _articleRepository.GetAll();
             var articlesViewModelList = new List<ArticleViewModel>();
             foreach (var article in articles)
             {
@@ -62,8 +65,7 @@ namespace Cashier.Controllers
                 {
                     var newArticle = ArticleMapper.ToArticleEntity(article, User.Identity.Name);
 
-                    _applicationDbContext.Articles.Add(newArticle);
-                    _applicationDbContext.SaveChanges();
+                    await _articleRepository.Add(newArticle);
                     _logger.LogInformation($"ArticlesController.CreateNewArticle article id={newArticle.Id} created successfuly");
                     return Json(new { success = true, description = "Article created successfully" });
                 }
@@ -82,9 +84,7 @@ namespace Cashier.Controllers
             try
             {
                 _logger.LogInformation($"ArticlesController.GetArticle id={id}");
-                var article = await _applicationDbContext
-                    .Articles
-                    .FirstOrDefaultAsync(x => x.Id == id);
+                var article = await _articleRepository.GetById(id);
                 var articleViewModel = new ArticleViewModel();
                 if (article != null)
                 {

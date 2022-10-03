@@ -1,4 +1,4 @@
-﻿using Cashier.Data;
+﻿using DataAccess.Data;
 using Entities.Articles;
 using InfrastructureSql.Interfaces;
 using Microsoft.EntityFrameworkCore;
