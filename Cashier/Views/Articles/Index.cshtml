@@ -1,1 +1,128 @@
 ﻿<h1>Articles</h1>
+<hr />
+@* Create new article button*@
+<div class="row">
+    <button type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#addArticleModal">
+        Add new article
+    </button>
+</div>
+@* Create new article error wrapper*@
+<div class="row">
+    <div 
+        class="alert alert-danger" 
+        id="createArticleErrors" 
+        style="visibility:hidden" 
+        role="alert">
+    </div>
+</div>
+@* Create new article modal*@
+<div class="modal fade" id="addArticleModal" tabindex="-1" role="dialog" aria-labelledby="addArticleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addArticleModalLabel">Add article</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="addNewArticleForm">
+                    <div class="form-group">
+                        <label for="articleName">Name</label>
+                        <input type="text" class="form-control" id="articleName" name="articleName" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label for="articleDescription">Description</label>
+                        <input type="text" class="form-control" id="articleDescription" name="articleDescription" placeholder="Enter description">
+                    </div>
+                    <div class="form-group">
+                        <label for="articleManufacturer">Manufacturer</label>
+                        <input type="text" class="form-control" id="articleManufacturer" name="articleManufacturer" placeholder="Enter Manufacturer">
+                    </div>
+                    <div class="form-group">
+                        <label for="articleCountry">Country</label>
+                        <input type="text" class="form-control" id="articleCountry" name="articleCountry" placeholder="Enter Country">
+                    </div>
+                    <div class="form-group">
+                        <label for="articlePrice">Price</label>
+                        <input type="text" class="form-control" id="articlePrice" name="articlePrice" placeholder="Enter Price">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Insert</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Render all articles *@
+<div class="card-columns" id="allArticles">
+</div>
+
+<script>
+    renderArticles();
+
+    function renderArticles(){
+        let resultDiv = document.getElementById("allArticles");
+        resultDiv.innerHTML = "";
+        let allArticles = axios
+            .get(`@Url.Action("GetAllArticles", "Articles")`)
+            .then((res) => {
+                let allArtilesRes = res.data;
+                allArtilesRes.forEach((el) => {
+                    resultDiv.insertAdjacentHTML(`beforeend`, `
+                            <div class="card p-3">
+                                <img class="card-img-top" style="width:100px;" alt="${el.description}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${el.name}</h5>
+                                    <p class="card-text">${el.description}</p>
+                                    <p class="card-text">Price: ${el.price}</p>
+                                    <a class="btn btn-primary" href="@Url.Action("GetArticle", "Articles")?id=${el.id}">View</a>
+                                </div>
+                            </div>
+                            `);
+                });
+            });
+    }
+    
+    function displayErrors(errorMessage){
+        document.getElementById("createArticleErrors").innerHTML = errorMessage;
+        document.getElementById("createArticleErrors").style.visibility = "visible";
+    }
+
+    document
+        .getElementById("addNewArticleForm")
+        .addEventListener("submit", function (evt) 
+    {
+        evt.preventDefault();
+        const formData = evt.target;
+        const newArticle = 
+        {
+            Country: formData.articleCountry.value,
+            Description: formData.articleDescription.value,
+            Manufacturer: formData.articleManufacturer.value,
+            Name: formData.articleName.value,
+            Price: formData.articlePrice.value
+        };
+        //javascript validation
+        if (isNaN(newArticle.Price) || newArticle.Price <= 0){
+            //return error
+            displayErrors("Price must be a valid number");
+            return;
+        }
+
+        axios.post(`@Url.Action("CreateNewArticle", "Articles")`, newArticle)
+            .then((res) => {
+                console.log(res.data);
+                if(res.data.success){
+                    $('#addArticleModal button.close').trigger('click');
+                    renderArticles();
+                } else {
+                    displayErrors(res.data.message);
+                }
+            });
+    }, true);
+
+</script>
