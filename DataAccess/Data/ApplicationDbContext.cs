@@ -1,10 +1,10 @@
-﻿using Entities.User;
+﻿using Entities.Articles;
+using Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Entities.Articles;
 
-namespace Cashier.Data
+namespace DataAccess.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
