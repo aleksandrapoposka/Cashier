@@ -1,11 +1,15 @@
 using Cashier.Data;
+using DataAccess;
 using DataAccess.Data;
 using Entities.Articles;
 using Entities.User;
+using InfrastructureMongoDB;
 using InfrastructureSql.Concrete;
 using InfrastructureSql.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using NLog;
 using NLog.Web;
 
@@ -30,6 +34,41 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
+
+builder.Services.Configure<MongoDBConnection>(
+                builder.Configuration.GetSection(nameof(MongoDBConnection)));
+
+//builder.Services.AddSingleton<IMongoDBConnection>(sp =>
+//    sp.GetRequiredService<IOptions<MongoDBConnection>>().Value);
+//builder.Services.AddSingleton<IMongoDBConnection, MongoDBConnection>();
+
+//builder.Services.AddSingleton<IMongoClient>(s =>
+//        new MongoClient(builder.Configuration.GetValue<string>("MongoDBDatabaseSettings:ConnectionString")));
+
+
+//builder.Services.Configure<MongoDBConnection>(
+//                builder.Configuration.GetSection(nameof(MongoDBConnection)));
+
+//builder.Services.AddSingleton<IMongoDBConnection>(sp =>
+//    sp.GetRequiredService<IOptions<MongoDBConnection>>().Value);
+
+//builder.Services.AddSingleton<IMongoClient>(s =>
+//        new MongoClient(builder.Configuration.GetValue<string>("MongoDBDatabaseSettings:ConnectionString")));
+
+
+builder.Services.Configure<MongoDBConnection>(
+    builder.Configuration.GetSection("MongoDBConnection")
+);
+
+builder.Services.AddSingleton<IMongoDatabase>(options => {
+    var settings = builder.Configuration.GetSection("MongoDBConnection").Get<MongoDBConnection>();
+    var client = new MongoClient(settings.ConnectionString);
+    return client.GetDatabase(settings.DatabaseName);
+});
+
+builder.Services.AddTransient<IArticleImageRepository, ArticleImageRepository>();
+
+
 
 // NLog: Setup NLog for Dependency injection
 builder.Logging.ClearProviders();

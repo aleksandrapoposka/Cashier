@@ -17,6 +17,7 @@ namespace Cashier.Models.Articles
         public string Manufacturer { get; set; }
         [Required]
         public string Country { get; set; }
+        public string ImgSrc { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

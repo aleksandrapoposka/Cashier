@@ -80,6 +80,7 @@
                                     <p class="card-text">${el.description}</p>
                                     <p class="card-text">Price: ${el.price}</p>
                                     <a class="btn btn-primary" href="@Url.Action("GetArticle", "Articles")?id=${el.id}">View</a>
+                                    <a class="btn btn-info" href="@Url.Action("AddArticleImage", "Articles")?id=${el.id}">Add image</a>
                                 </div>
                             </div>
                             `);

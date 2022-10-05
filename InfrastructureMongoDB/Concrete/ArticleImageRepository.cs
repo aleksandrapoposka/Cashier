@@ -12,12 +12,20 @@ namespace InfrastructureMongoDB
 {
     public class ArticleImageRepository : IArticleImageRepository
     {
-        private readonly IMongoCollection<ArticleImage> _images;
+        //private readonly IMongoCollection<ArticleImage> _images;
+        //private readonly IMongoDBConnection _settings;
 
-        public ArticleImageRepository(IMongoDBConnection settings, IMongoClient mongoClient)
+        //public ArticleImageRepository(IMongoDBConnection settings, IMongoClient mongoClient)
+        //{
+        //    _settings = settings;
+        //    var database = mongoClient.GetDatabase(_settings.DatabaseName);
+        //    _images = database.GetCollection<ArticleImage>(_settings.MongoDBCollectionName);
+        //}
+
+        private readonly IMongoCollection<ArticleImage> _images;
+        public ArticleImageRepository(IMongoDatabase mongoDatabase)
         {
-            var database = mongoClient.GetDatabase(settings.DatabaseName);
-            _images = database.GetCollection<ArticleImage>(settings.MongoDBCollectionName);
+            _images = mongoDatabase.GetCollection<ArticleImage>("ArticleImage");
         }
 
         public ArticleImage Create(ArticleImage image)

@@ -1,0 +1,14 @@
+﻿@using Cashier.Models.Articles
+@model ArticleViewModel
+
+<h1>Article: @Model.Name</h1>
+<form method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="articleImage" class="form-label">Select article image</label>
+        <input class="form-control" type="file" id="articleImage" name="articleImage">
+    </div>
+    <div>
+        <input type="hidden" name="articleId" value="@Model.Id" />
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </div>
+</form>
