@@ -15,7 +15,7 @@ namespace InfrastructureMongo.Concrete
     {
         private readonly IMongoCollection<ArticleImage> _images;
 
-        public ArticleImageService(IMongoDatabaseSettings settings, IMongoClient mongoClient)
+        public ArticleImageService(IMongoDBSettings settings, IMongoClient mongoClient)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _images = database.GetCollection<ArticleImage>(settings.CollectionName);

@@ -1,11 +1,16 @@
-using Cashier.Data;
 using DataAccess.Data;
+using DataAccess.Interfaces;
+using DataAccess.Models;
 using Entities.Articles;
 using Entities.User;
+using InfrastructureMongo.Concrete;
+using InfrastructureMongo.Interfaces;
 using InfrastructureSql.Concrete;
 using InfrastructureSql.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using NLog;
 using NLog.Web;
 
@@ -19,6 +24,18 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+//Add mongoDB client
+builder.Services.Configure<MongoDBSettings>(
+                builder.Configuration.GetSection(nameof(MongoDBSettings)));
+
+builder.Services.AddSingleton<IMongoDBSettings>(sp =>
+    sp.GetRequiredService<IOptions<MongoDBSettings>>().Value);
+
+builder.Services.AddSingleton<IMongoClient>(s =>
+        new MongoClient(builder.Configuration.GetValue<string>("MongoDatabaseConnectionString:ConnectionString")));
+
+builder.Services.AddScoped<IArticleImageService, ArticleImageService>();
 
 //builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
 //    .AddEntityFrameworkStores<ApplicationDbContext>();

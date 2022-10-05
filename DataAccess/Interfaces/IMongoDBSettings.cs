@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Interfaces
 {
-    public interface IMongoDatabaseSettings
+    public interface IMongoDBSettings
     {
         string CollectionName { get; set; }
         string ConnectionString { get; set; }
