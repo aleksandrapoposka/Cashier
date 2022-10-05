@@ -98,5 +98,25 @@ namespace Cashier.Controllers
                 throw;
             }
         }
+
+        public async Task<IActionResult> EditArticle(long id)
+        {
+            try
+            {
+                _logger.LogInformation($"ArticlesController.EditArticle id={id}");
+                var article = await _articleRepository.GetById(id);
+                var articleViewModel = new ArticleViewModel();
+                if (article != null)
+                {
+                    articleViewModel = ArticleMapper.ToArticleViewModel(article);
+                }
+                return View("Article", articleViewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"ArticlesController.EditArticle exception", ex);
+                throw;
+            }
+        }
     }
 }
