@@ -1,5 +1,4 @@
-﻿using Cashier.Data;
-using Cashier.Helpers;
+﻿using Cashier.Helpers;
 using Cashier.Models.Articles;
 using DataAccess.Data;
 using Entities.Articles;

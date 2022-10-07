@@ -24,7 +24,7 @@ namespace DataAccess.Data
             modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole
                 {
-                    Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
+                    Id = "2c5e174e-3b0e-446f-86af-483d56fd7211",
                     Name = "SuperAdmin",
                     NormalizedName = "SUPERADMIN".ToUpper(),
                     ConcurrencyStamp = "2c5e174e-3b0e-446f-86af-483d56fd7210"
@@ -53,7 +53,7 @@ namespace DataAccess.Data
             //create super admin user
             var superAdminFilip = new ApplicationUser
             {
-                Id = "8e445865-a24d-4543-a6c6-9443d048cdb1", // primary key
+                Id = "8e445865-a24d-4543-a6c6-9443d048c111", // primary key
                 UserName = "filip@admin.com",
                 NormalizedUserName = "filip@admin.com".ToUpper(),
                 DateOfBirth = new DateTime(1995, 4, 25),
@@ -70,7 +70,7 @@ namespace DataAccess.Data
 
             var superAdminAleks = new ApplicationUser
             {
-                Id = "8e445123-a24d-4543-a6c6-9443d048cdc1", // primary key
+                Id = "8e445123-a24d-4543-a6c6-9443d048c222", // primary key
                 UserName = "aleksandra@admin.com",
                 NormalizedUserName = "aleksandra@admin.com".ToUpper(),
                 DateOfBirth = new DateTime(1995, 4, 25),
@@ -88,15 +88,15 @@ namespace DataAccess.Data
             modelBuilder.Entity<IdentityUserRole<string>>()
                 .HasData(new IdentityUserRole<string>
                 {
-                    RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                    UserId = "8e445865-a24d-4543-a6c6-9443d048cdb1"
+                    RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7211",
+                    UserId = "8e445865-a24d-4543-a6c6-9443d048c111"
                 });
 
             modelBuilder.Entity<IdentityUserRole<string>>()
                 .HasData(new IdentityUserRole<string>
                 {
-                    RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                    UserId = "8e445123-a24d-4543-a6c6-9443d048cdc1"
+                    RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7211",
+                    UserId = "8e445123-a24d-4543-a6c6-9443d048c222"
                 });
 
             modelBuilder.Entity<Article>().HasKey(x => x.Id);

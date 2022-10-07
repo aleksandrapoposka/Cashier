@@ -1,4 +1,3 @@
-using Cashier.Data;
 using DataAccess;
 using DataAccess.Data;
 using Entities.Articles;
