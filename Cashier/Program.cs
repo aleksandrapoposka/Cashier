@@ -39,6 +39,11 @@ builder.Services.AddScoped<IRepository<Country>, CountryRepository>();
 builder.Services.Configure<MongoDBConnection>(
                 builder.Configuration.GetSection(nameof(MongoDBConnection)));
 
+builder.Services.AddStackExchangeRedisCache(options => {
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "Cashier_";
+});
+
 //builder.Services.AddSingleton<IMongoDBConnection>(sp =>
 //    sp.GetRequiredService<IOptions<MongoDBConnection>>().Value);
 //builder.Services.AddSingleton<IMongoDBConnection, MongoDBConnection>();

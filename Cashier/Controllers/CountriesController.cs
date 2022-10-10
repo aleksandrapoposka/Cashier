@@ -4,10 +4,13 @@ using Cashier.Models.Countries;
 using Entities;
 using Entities.Articles;
 using InfrastructureMongoDB;
+using InfrastructureRedis;
 using InfrastructureSql.Concrete;
 using InfrastructureSql.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Cashier.Controllers
@@ -17,13 +20,19 @@ namespace Cashier.Controllers
     {
         private readonly ILogger<CountriesController> _logger;
         private readonly IRepository<Country> _countryRepository;
+        private IDistributedCache _cacheProvider;
+
+        public string countriesCacheKey = "Countries";
+
 
         public CountriesController(
            ILogger<CountriesController> logger,
-           IRepository<Country> countryRepository)
+           IRepository<Country> countryRepository,
+           IDistributedCache cacheProvider)
         {
             _logger = logger;
             _countryRepository = countryRepository;
+            _cacheProvider = cacheProvider;
         }
 
         public IActionResult Index()
@@ -34,24 +43,46 @@ namespace Cashier.Controllers
 
         public async Task<IActionResult> GetAllCountries()
         {
-            _logger.LogInformation("CountriesController.GetAllCountries");
-            var countries = await _countryRepository.GetAll();
-            var countriesViewModelList = new List<CountryViewModel>();
-            foreach (var country in countries)
+            try
             {
-                var countryViewModel = new CountryViewModel
+                _logger.LogInformation("CountriesController.GetAllCountries");
+
+                List<Country>? countries =
+                    await RedisHelper.GetRecordAsync<List<Country>>(_cacheProvider, countriesCacheKey);
+
+                if (countries == null)
                 {
-                    Id = country.Id,
-                    Name = country.Name,
-                    IsoNumericCode = country.IsoNumericCode,
-                    Alpha2Code = country.Alpha2Code,
-                    Alpha3Code = country.Alpha3Code,
-                    ContinentCode = country.ContinentCode
-                   };
-                countriesViewModelList.Add(countryViewModel);
+                    countries = await _countryRepository.GetAll();
+
+                    await RedisHelper.SetRecordAsync(
+                        _cacheProvider,
+                        countriesCacheKey,
+                        countries);
+                }
+
+                var countriesViewModelList = new List<CountryViewModel>();
+                foreach (var country in countries)
+                {
+                    var countryViewModel = new CountryViewModel
+                    {
+                        Id = country.Id,
+                        Name = country.Name,
+                        IsoNumericCode = country.IsoNumericCode,
+                        Alpha2Code = country.Alpha2Code,
+                        Alpha3Code = country.Alpha3Code,
+                        ContinentCode = country.ContinentCode
+                    };
+                    countriesViewModelList.Add(countryViewModel);
+                }
+                _logger.LogInformation($"CountriesController.GetAllCountries return: {countriesViewModelList}");
+                return Json(countriesViewModelList);
             }
-            _logger.LogInformation($"CountriesController.GetAllCountries return: {countriesViewModelList}");
-            return Json(countriesViewModelList);
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+           
         }
 
         [HttpPost]
@@ -63,8 +94,9 @@ namespace Cashier.Controllers
                 if (ModelState.IsValid)
                 {
                     var newCountry = CountryMapper.ToCountryEntity(country, User.Identity.Name);
-
                     await _countryRepository.Add(newCountry);
+                    await RedisHelper.RemoveRecordAsync(_cacheProvider, countriesCacheKey);
+
                     _logger.LogInformation($"CountriesController.CreateNewCountry country id={newCountry.Id} created successfuly");
                     return Json(new { success = true, description = "Country created successfully" });
                 }
