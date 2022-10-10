@@ -58,7 +58,7 @@
 </div>
 
 @* Render all articles *@
-<div class="card-columns" id="allArticles">
+<div class="card-deck" id="allArticles">
 </div>
 
 <script>
@@ -72,9 +72,10 @@
             .then((res) => {
                 let allArtilesRes = res.data;
                 allArtilesRes.forEach((el) => {
+                    console.log(el)
                     resultDiv.insertAdjacentHTML(`beforeend`, `
                             <div class="card p-3">
-                                <img class="card-img-top" style="width:100px;" alt="${el.description}">
+                                <img class="card-img-top" style="width:100px;" alt="${el.description}" src="${el.imgSrc}">
                                 <div class="card-body">
                                     <h5 class="card-title">${el.name}</h5>
                                     <p class="card-text">${el.description}</p>

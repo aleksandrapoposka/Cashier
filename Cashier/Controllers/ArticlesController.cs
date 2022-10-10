@@ -50,7 +50,8 @@ namespace Cashier.Controllers
                     Manufacturer = article.Manufacturer,
                     Name = article.Name,
                     Price = article.Price,
-                    Stock = article.Stock
+                    Stock = article.Stock,
+                    ImgSrc = "data:image;base64," + Convert.ToBase64String(_articleImageRepository.Get(article.Id).Image)
                 };
                 articlesViewModelList.Add(articleViewModel);
             }
