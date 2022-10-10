@@ -175,5 +175,50 @@ namespace Cashier.Controllers
                 throw ex;
             }
         }
+
+        public async Task<IActionResult> EditArticle(long id)
+        {
+            try
+            {
+                _logger.LogInformation($"ArticlesController.EditArticle id={id}");
+                var articleEntity = await _articleRepository.GetById(id);
+                if (articleEntity == null)
+                {
+                    //return error
+                }
+                var articleViewModel = ArticleMapper.ToArticleViewModel(articleEntity);
+                articleViewModel.ImgSrc = "data:image;base64," + Convert.ToBase64String(_articleImageRepository.Get(id).Image);
+                return View(articleViewModel);
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"ArticlesController.EditArticle id={id}");
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditArticle(ArticleViewModel articleViewModel)
+        {
+            try
+            {
+                _logger.LogInformation($"ArticlesController.EditArticle id={articleViewModel.Id}");
+                if (!ModelState.IsValid)
+                {
+                    return View(articleViewModel);
+                }
+                
+                var articleEntity = ArticleMapper.ToArticleEntity(articleViewModel, User.Identity.Name);
+                await _articleRepository.Update(articleEntity);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"ArticlesController.EditArticle exception", ex);
+                throw ex;
+            }
+        }
+
     }
 }

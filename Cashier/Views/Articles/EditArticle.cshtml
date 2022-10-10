@@ -1,0 +1,47 @@
+﻿@using Cashier.Models.Articles
+@model ArticleViewModel
+
+<h1>Edit article</h1>
+<img src="@Model.ImgSrc" class="rounded mx-auto d-block" style="max-width:600px" alt="@Model.Description">
+<form method="post">
+    <div class="text-danger" asp-validation-summary="All"></div>
+    <div class="mb-3 row">
+        <label asp-for="Name" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" asp-for="Name">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label asp-for="Description" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" asp-for="Description">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label asp-for="Country" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" asp-for="Country">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label asp-for="Stock" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" asp-for="Stock">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label asp-for="Price" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" asp-for="Price">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label asp-for="Manufacturer" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" asp-for="Manufacturer">
+        </div>
+    </div>
+    <input type="hidden" asp-for="Id" />
+    
+    <button class="btn btn-primary" type="submit">Update</button>
+</form>
