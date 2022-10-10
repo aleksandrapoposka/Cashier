@@ -11,11 +11,10 @@
 </div>
 @* Create new article error wrapper*@
 <div class="row">
-    <div 
-        class="alert alert-danger" 
-        id="createArticleErrors" 
-        style="visibility:hidden" 
-        role="alert">
+    <div class="alert alert-danger"
+         id="createArticleErrors"
+         style="visibility:hidden"
+         role="alert">
     </div>
 </div>
 @* Create new article modal*@
@@ -43,8 +42,9 @@
                         <input type="text" class="form-control" id="articleManufacturer" name="articleManufacturer" placeholder="Enter Manufacturer">
                     </div>
                     <div class="form-group">
+                        @*@Html.LabelFor(model => model , "Country", htmlAttributes: new { @class = "control-label col-md-2" })*@
                         <label for="articleCountry">Country</label>
-                        <input type="text" class="form-control" id="articleCountry" name="articleCountry" placeholder="Enter Country">
+                        @Html.DropDownList("countryId", new SelectList(ViewBag.Countries, "Value", "Text"), new {id = "country", @class = "form-select"})
                     </div>
                     <div class="form-group">
                         <label for="articlePrice">Price</label>
@@ -58,13 +58,13 @@
 </div>
 
 @* Render all articles *@
-<div class="card-deck" id="allArticles">
+<div class="card-columns" id="allArticles">
 </div>
 
 <script>
     renderArticles();
 
-    function renderArticles(){
+    function renderArticles() {
         let resultDiv = document.getElementById("allArticles");
         resultDiv.innerHTML = "";
         let allArticles = axios
@@ -72,60 +72,58 @@
             .then((res) => {
                 let allArtilesRes = res.data;
                 allArtilesRes.forEach((el) => {
-                    console.log(el)
                     resultDiv.insertAdjacentHTML(`beforeend`, `
-                            <div class="card p-3">
-                                <img class="card-img-top" style="width:100px;" alt="${el.description}" src="${el.imgSrc}">
-                                <div class="card-body">
-                                    <h5 class="card-title">${el.name}</h5>
-                                    <p class="card-text">${el.description}</p>
-                                    <p class="card-text">Price: ${el.price}</p>
-                                    <a class="btn btn-primary" href="@Url.Action("GetArticle", "Articles")?id=${el.id}">View</a>
-                                    <a class="btn btn-info" href="@Url.Action("AddArticleImage", "Articles")?id=${el.id}">Add image</a>
-                                    <a class="btn btn-danger" href="@Url.Action("EditArticle", "Articles")?id=${el.id}">Edit</a>
+                                <div class="card p-3">
+                                    <img class="card-img-top" style="width:100px;" alt="${el.description}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${el.name}</h5>
+                                        <p class="card-text">${el.description}</p>
+                                        <p class="card-text">Price: ${el.price}</p>
+                                        <a class="btn btn-primary" href="@Url.Action("GetArticle", "Articles")?id=${el.id}">View</a>
+                                        <a class="btn btn-info" href="@Url.Action("AddArticleImage", "Articles")?id=${el.id}">Add image</a>
+                                    </div>
                                 </div>
-                            </div>
-                            `);
+                                `);
                 });
             });
     }
-    
-    function displayErrors(errorMessage){
+
+    function displayErrors(errorMessage) {
         document.getElementById("createArticleErrors").innerHTML = errorMessage;
         document.getElementById("createArticleErrors").style.visibility = "visible";
     }
 
     document
         .getElementById("addNewArticleForm")
-        .addEventListener("submit", function (evt) 
-    {
-        evt.preventDefault();
-        const formData = evt.target;
-        const newArticle = 
-        {
-            Country: formData.articleCountry.value,
-            Description: formData.articleDescription.value,
-            Manufacturer: formData.articleManufacturer.value,
-            Name: formData.articleName.value,
-            Price: formData.articlePrice.value
-        };
-        //javascript validation
-        if (isNaN(newArticle.Price) || newArticle.Price <= 0){
-            //return error
-            displayErrors("Price must be a valid number");
-            return;
-        }
+        .addEventListener("submit", function (evt) {
+            evt.preventDefault();
 
-        axios.post(`@Url.Action("CreateNewArticle", "Articles")`, newArticle)
-            .then((res) => {
-                console.log(res.data);
-                if(res.data.success){
-                    $('#addArticleModal button.close').trigger('click');
-                    renderArticles();
-                } else {
-                    displayErrors(res.data.message);
-                }
-            });
-    }, true);
+            const formData = evt.target;
+            const newArticle =
+            {
+                Country: $("#country").val(),
+                Description: formData.articleDescription.value,
+                Manufacturer: formData.articleManufacturer.value,
+                Name: formData.articleName.value,
+                Price: formData.articlePrice.value
+            };
+            //javascript validation
+            if (isNaN(newArticle.Price) || newArticle.Price <= 0) {
+                //return error
+                displayErrors("Price must be a valid number");
+                return;
+            }
+
+            axios.post(`@Url.Action("CreateNewArticle", "Articles")`, newArticle)
+                .then((res) => {
+                    console.log(res.data);
+                    if (res.data.success) {
+                        $('#addArticleModal button.close').trigger('click');
+                        renderArticles();
+                    } else {
+                        displayErrors(res.data.message);
+                    }
+                });
+        }, true);
 
 </script>

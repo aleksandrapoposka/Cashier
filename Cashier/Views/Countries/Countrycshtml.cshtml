@@ -1,0 +1,15 @@
+﻿@using Cashier.Models.Countries
+@model CountryViewModel
+
+<h1>Country: @Model.Name</h1>
+<div class="row">
+    <div class="card mb-3">
+
+        <div class="card-body">
+            <p class="card-text">@Model.Alpha2Code</p>
+            <p class="card-text">@Model.Alpha3Code</p>
+            <p class="card-text">@Model.ContinentCode</p>
+        </div>
+
+    </div>
+</div>

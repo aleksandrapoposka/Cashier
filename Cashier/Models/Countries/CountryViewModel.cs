@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace Cashier.Models.Countries
 {
@@ -19,7 +20,24 @@ namespace Cashier.Models.Countries
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            throw new NotImplementedException();
+            if (Alpha2Code.Length != 2)
+            {
+                yield return new ValidationResult("Please enter valid alpha2 code",
+                    new[] { nameof(Alpha2Code) });
+            }
+
+            if (Alpha3Code.Length != 3)
+            {
+                yield return new ValidationResult("Please enter valid alpha3 code",
+                    new[] { nameof(Alpha3Code) });
+            }
+
+            Regex regex = new Regex("^[0-9]+$");
+            if (!regex.IsMatch(IsoNumericCode.ToString()))
+            {
+                yield return new ValidationResult("Please enter valid ISO numeric code",
+                    new[] { nameof(IsoNumericCode) });
+            }
         }
     }
 }

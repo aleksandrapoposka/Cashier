@@ -1,0 +1,125 @@
+﻿<h1>Countries</h1>
+<hr />
+@* Create new country button*@
+<div class="row">
+    <button type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#addCountryModal">
+        Add new country
+    </button>
+</div>
+@* Create new country error wrapper*@
+<div class="row">
+    <div class="alert alert-danger"
+         id="createCountryErrors"
+         style="visibility:hidden"
+         role="alert">
+    </div>
+</div>
+@* Create new country modal*@
+<div class="modal fade" id="addCountryModal" tabindex="-1" role="dialog" aria-labelledby="addCountryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCountryModalLabel">Add country</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="addNewCountryForm">
+                    <div class="form-group">
+                        <label for="isoNumericCode">Iso numeric code</label>
+                        <input type="text" class="form-control" id="isoNumericCode" name="isoNumericCode" placeholder="ISO Code">
+                    </div>
+                    <div class="form-group">
+                        <label for="countryName">Name</label>
+                        <input type="text" class="form-control" id="countryName" name="countryName" placeholder="Enter country name">
+                    </div>
+                    <div class="form-group">
+                        <label for="alpha2Code">Alpha2 code</label>
+                        <input type="text" class="form-control" id="alpha2Code" name="alpha2Code" placeholder="Alpha2Code">
+                    </div>
+                    <div class="form-group">
+                        <label for="alpha3Code">Alpha3 code</label>
+                        <input type="text" class="form-control" id="alpha3Code" name="alpha3Code" placeholder="Alpha3Code">
+                    </div>
+                    <div class="form-group">
+                        <label for="continentCode">Continent code</label>
+                        <input type="text" class="form-control" id="continentCode" name="continentCode" placeholder="Continent code">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Insert</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Render all countries *@
+<div class="card-columns" id="allCountries">
+</div>
+
+<script>
+    renderCountries();
+
+    function renderCountries() {
+        let resultDiv = document.getElementById("allCountries");
+        resultDiv.innerHTML = "";
+        let allCountries = axios
+            .get(`@Url.Action("GetAllCountries", "Countries")`)
+            .then((res) => {
+                let allCountriesRes = res.data;
+                allCountriesRes.forEach((el) => {
+                    resultDiv.insertAdjacentHTML(`beforeend`, `
+                                    <div class="card p-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${el.name}</h5>
+                                            <p class="card-text">Alpha2Code: ${el.alpha2Code}</p>
+                                            <p class="card-text">Alpha3Code: ${el.alpha3Code}</p>
+                                            <p class="card-text">ContinentCode: ${el.continentCode}</p>
+                                        </div>
+                                    </div>
+                                    `);
+                });
+            });
+    }
+
+    function displayErrors(errorMessage) {
+        document.getElementById("createCountryErrors").innerHTML = errorMessage;
+        document.getElementById("createCountryErrors").style.visibility = "visible";
+    }
+
+    document
+        .getElementById("addNewCountryForm")
+        .addEventListener("submit", function (evt) {
+            evt.preventDefault();
+            const formData = evt.target;
+            const newCountry =
+            {
+                Name: formData.countryName.value,
+                IsoNumericCode: formData.isoNumericCode.value,
+                Alpha2Code: formData.alpha2Code.value,
+                Alpha3Code: formData.alpha3Code.value,
+                ContinentCode: formData.continentCode.value
+            };
+            //javascript validation
+            if (isNaN(newCountry.IsoNumericCode) || newCountry.IsoNumericCode <= 0) {
+                //return error
+                displayErrors("ISO numeric code must be a valid number");
+                return;
+            }
+
+            axios.post(`@Url.Action("CreateNewCountry", "Countries")`, newCountry)
+                .then((res) => {
+                    console.log(res.data);
+                    if (res.data.success) {
+                        $('#addCountryModal button.close').trigger('click');
+                        renderCountries();
+                    } else {
+                        displayErrors(res.data.message);
+                    }
+                });
+        }, true);
+
+</script>

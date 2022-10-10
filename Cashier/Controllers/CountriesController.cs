@@ -53,27 +53,7 @@ namespace Cashier.Controllers
             _logger.LogInformation($"CountriesController.GetAllCountries return: {countriesViewModelList}");
             return Json(countriesViewModelList);
         }
-        public async Task<IActionResult> GetCountry(long id)
-        {
-            try
-            {
-                _logger.LogInformation($"CountriesController.GetCountry id={id}");
-                var country = await _countryRepository.GetById(id);
 
-                var countryViewModel = new CountryViewModel();
-                if (country != null)
-                {
-                    countryViewModel = CountryMapper.ToCountryViewModel(country);
-
-                }
-                return View("Country", countryViewModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"CountriesController.GetCountry exception", ex);
-                throw;
-            }
-        }
         [HttpPost]
         public async Task<IActionResult> CreateNewCountry([FromBody] CountryViewModel country)
         {
