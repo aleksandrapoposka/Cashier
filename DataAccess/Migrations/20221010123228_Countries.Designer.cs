@@ -4,6 +4,7 @@ using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221010123228_Countries")]
+    partial class Countries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,8 +32,9 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<int>("Country")
-                        .HasColumnType("int");
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -366,16 +369,16 @@ namespace DataAccess.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048c111",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "410eb39e-ed7e-43af-bc74-df772366435c",
+                            ConcurrencyStamp = "55dd93c3-88eb-4282-8536-8f7094465bdd",
                             Email = "filip@admin.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "FILIP@ADMIN.COM",
                             NormalizedUserName = "FILIP@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIEbM/ej8u0sOaPrFKBM9dr5GlX9FP4FT2G8lz3UWWPnRDa3UUIvwHmdNhE0xoMLwQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDj+r0lOPY9unqYSfzeTBXiRmVh1W8Hq6h7x3Uosy4v0X9GsQMY2lBStPwj26gm0vw==",
                             PhoneNumber = "077511123",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c66f7f8a-3b57-4b06-82f6-1ca6ac943a61",
+                            SecurityStamp = "e26420a3-3ab4-43fc-8826-a18995baff7a",
                             TwoFactorEnabled = false,
                             UserName = "filip@admin.com",
                             DateOfBirth = new DateTime(1995, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -386,16 +389,16 @@ namespace DataAccess.Migrations
                         {
                             Id = "8e445123-a24d-4543-a6c6-9443d048c222",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4f5e18ab-9278-48ef-b7cc-b541b85e0c6b",
+                            ConcurrencyStamp = "87db61df-457b-45d8-b2ea-cc952b34faf1",
                             Email = "aleksandra@admin.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ALEKSANDRA@ADMIN.COM",
                             NormalizedUserName = "ALEKSANDRA@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEVqEL93sdRBHdjFhOgJ1c0h+PfF5FKCCATkqRjqBj1cFAHZwtZYw1Ffa+ysUCAr0Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFGziqO6esVuXfzfYdJp++XUhV5i/nV7cJH5Ot4Sz2JMFde+JQt9CIUxcEhPncU1ow==",
                             PhoneNumber = "077511166",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f8dc9ea9-22d7-4123-9959-646a327faca3",
+                            SecurityStamp = "ae2511f3-d7b7-46d8-8521-7cdc889633cf",
                             TwoFactorEnabled = false,
                             UserName = "aleksandra@admin.com",
                             DateOfBirth = new DateTime(1995, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),

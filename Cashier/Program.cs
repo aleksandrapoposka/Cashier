@@ -1,5 +1,6 @@
 using DataAccess;
 using DataAccess.Data;
+using Entities;
 using Entities.Articles;
 using Entities.User;
 using InfrastructureMongoDB;
@@ -33,6 +34,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
+builder.Services.AddScoped<IRepository<Country>, CountryRepository>();
+
 
 builder.Services.Configure<MongoDBConnection>(
                 builder.Configuration.GetSection(nameof(MongoDBConnection)));
@@ -67,7 +70,9 @@ builder.Services.AddSingleton<IMongoDatabase>(options => {
 
 builder.Services.AddTransient<IArticleImageRepository, ArticleImageRepository>();
 
-
+builder.Services.AddStackExchangeRedisCache(options => {
+    options.Configuration = builder.Configuration.GetConnectionString("RedisCacheUrl");
+});
 
 // NLog: Setup NLog for Dependency injection
 builder.Logging.ClearProviders();

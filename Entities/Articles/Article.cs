@@ -19,7 +19,7 @@ namespace Entities.Articles
         public bool IsOnSale { get; set; }
         public int Stock { get; set; }
         public string Manufacturer { get; set; }
-        public string Country { get; set; }
+        public int Country { get; set; }
         
     }
 }

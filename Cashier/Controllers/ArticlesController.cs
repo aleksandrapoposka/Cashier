@@ -1,12 +1,14 @@
 ﻿using Cashier.Helpers;
 using Cashier.Models.Articles;
 using DataAccess.Data;
+using Entities;
 using Entities.Articles;
 using InfrastructureMongoDB;
 using InfrastructureSql.Concrete;
 using InfrastructureSql.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cashier.Controllers
@@ -17,19 +19,27 @@ namespace Cashier.Controllers
         private readonly ILogger<ArticlesController> _logger;
         private readonly IRepository<Article> _articleRepository;
         private readonly IArticleImageRepository _articleImageRepository;
-        
+        private readonly IRepository<Country> _countryRepository;
+
         public ArticlesController(
             ILogger<ArticlesController> logger,
             IRepository<Article> articleRepository,
-            IArticleImageRepository articleImageRepository)
+            IArticleImageRepository articleImageRepository,
+            IRepository<Country> countryRepository)
         {
             _logger = logger;
             _articleRepository = articleRepository;
             _articleImageRepository = articleImageRepository;
+            _countryRepository = countryRepository;
         }
         
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var result =await _countryRepository.GetAll();
+            var countries = result.OrderBy(x => x.Name).Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString(), Selected = false })
+                .ToList(); 
+            ViewBag.Countries = countries;
+
             _logger.LogInformation("ArticlesController.Index");
             return View();
         }

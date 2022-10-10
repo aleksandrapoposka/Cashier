@@ -43,8 +43,8 @@
                         <input type="text" class="form-control" id="articleManufacturer" name="articleManufacturer" placeholder="Enter Manufacturer">
                     </div>
                     <div class="form-group">
-                        <label for="articleCountry">Country</label>
-                        <input type="text" class="form-control" id="articleCountry" name="articleCountry" placeholder="Enter Country">
+                        @Html.LabelFor(model => model , "Country", htmlAttributes: new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("countryId", new SelectList(ViewBag.Countries, "Value", "Text"), new {id = "country"})
                     </div>
                     <div class="form-group">
                         <label for="articlePrice">Price</label>
@@ -98,10 +98,11 @@
         .addEventListener("submit", function (evt) 
     {
         evt.preventDefault();
+
         const formData = evt.target;
         const newArticle = 
         {
-            Country: formData.articleCountry.value,
+            Country: $("#country").val(),
             Description: formData.articleDescription.value,
             Manufacturer: formData.articleManufacturer.value,
             Name: formData.articleName.value,
