@@ -1,4 +1,5 @@
-﻿using Entities.Articles;
+﻿using Entities;
+using Entities.Articles;
 using Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace DataAccess.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Article> Articles { get; set; }
-
+        public DbSet<Country> Countries { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
