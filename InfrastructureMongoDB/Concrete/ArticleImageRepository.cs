@@ -12,16 +12,6 @@ namespace InfrastructureMongoDB
 {
     public class ArticleImageRepository : IArticleImageRepository
     {
-        //private readonly IMongoCollection<ArticleImage> _images;
-        //private readonly IMongoDBConnection _settings;
-
-        //public ArticleImageRepository(IMongoDBConnection settings, IMongoClient mongoClient)
-        //{
-        //    _settings = settings;
-        //    var database = mongoClient.GetDatabase(_settings.DatabaseName);
-        //    _images = database.GetCollection<ArticleImage>(_settings.MongoDBCollectionName);
-        //}
-
         private readonly IMongoCollection<ArticleImage> _images;
         public ArticleImageRepository(IMongoDatabase mongoDatabase)
         {
@@ -30,7 +20,15 @@ namespace InfrastructureMongoDB
 
         public ArticleImage Create(ArticleImage image)
         {
-            _images.InsertOne(image);
+            var existingImage = _images.Find(i => i.ArticleId == image.ArticleId).FirstOrDefault();
+            if(existingImage == null)
+            {
+                _images.InsertOne(image);
+            } else
+            {
+                _images.DeleteMany(i => i.ArticleId == image.ArticleId);
+                _images.InsertOne(image);
+            }
             return image;
         }
 
