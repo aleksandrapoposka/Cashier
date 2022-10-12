@@ -2,6 +2,7 @@ using DataAccess;
 using DataAccess.Data;
 using Entities;
 using Entities.Articles;
+using Entities.Orders;
 using Entities.User;
 using InfrastructureMongoDB;
 using InfrastructureSql.Concrete;
@@ -35,6 +36,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
 builder.Services.AddScoped<IRepository<Country>, CountryRepository>();
+builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
+
 
 builder.Services.Configure<MongoDBConnection>(
                 builder.Configuration.GetSection(nameof(MongoDBConnection)));
