@@ -74,7 +74,7 @@
                 allArtilesRes.forEach((el) => {
                     resultDiv.insertAdjacentHTML(`beforeend`, `
                                 <div class="card p-3">
-                                    <img class="card-img-top" style="width:100px;" alt="${el.description}">
+                                    <img class="card-img-top" style="width:100px;" alt="${el.description}" src="${el.imgSrc}">
                                     <div class="card-body">
                                         <h5 class="card-title">${el.name}</h5>
                                         <p class="card-text">${el.description}</p>
