@@ -1,8 +1,24 @@
 ﻿<h1>Create new order</h1>
 <hr />
 <div>
-    <form>
-        <button class="btn btn-primary">New article</button>
+    <form onsubmit="postOrderData(event)">
+        <div class="row">
+            <div class="col-3">
+                <input list="articlesList" name="articles" id="article" placeholder="Articles" onchange="getArticleDetails(this)">
+                <datalist id="articlesList"></datalist>
+            </div>
+            <div class="col-3">
+                <input type="number" name="count" id="count" placeholder="Count"/>
+            </div>
+            <div class="col-3">
+                <input type="number" name="price" id="price" disabled/>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-info" onclick="addArticleToList()" type="button">+</button>
+            </div>
+        </div>
+
+        <ul class="row" id="orderDetails"></ul>
 
 
         <input type="submit" value="Create" class="btn btn-success" />
@@ -11,9 +27,65 @@
 
 
 <script>
-    const articles = [];
+    let articles = [];
+    let orderData = [];
+
+    //get all articles
     axios.get(`@Url.Action("GetAllArticles", "Articles")`)
         .then((res) => {
-            console.log(res.data);
-        })
+            articles = res.data;
+            document.getElementById("articlesList").innerHTML = "";
+            articles.forEach(el => {
+                document.getElementById("articlesList").insertAdjacentHTML("beforeend", `
+                    <option value="${el.name}"></option>
+                `);
+            });
+        });
+
+    //populate inputs with article details
+    function getArticleDetails(ev) {
+        let articleName = ev.value;
+        var article = articles.find(el => el.name == articleName);
+        console.log(article);
+
+        if(article == null){
+            return;
+        }
+
+        document.getElementById("price").value = article.price;
+        document.getElementById("count").value = article.stock;
+    }
+
+    function addArticleToList(){
+        console.log("add article to list", orderData);
+        let articleName = document.getElementById("article").value;
+        let article = articles.find(el => el.name == articleName);
+
+        let newArticle = {
+            articleId: article.id,
+            name: document.getElementById("article").value,
+            count: document.getElementById("count").value,
+            price: document.getElementById("price").value
+        };
+        orderData.push(newArticle);
+
+        let orderDetailsUl = document.getElementById("orderDetails");
+        orderDetailsUl.innerHTML = "";
+        orderData.forEach(el => {
+            let orderLi = document.createElement("li");
+            orderLi.innerHTML = `Item: ${el.name}, Count: ${el.count}, Price: ${el.price}`;
+            orderDetailsUl.append(orderLi);
+        });
+
+    }
+
+    function postOrderData(ev){
+        ev.preventDefault();
+        console.log("post", orderData);
+
+        axios.post(`@Url.Action("PostOrder", "Orders")`, orderData)
+            .then((res) => {
+                console.log(res);
+            });
+    }
 </script>

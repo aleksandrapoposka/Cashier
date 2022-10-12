@@ -20,8 +20,18 @@ namespace InfrastructureSql.Concrete
         
         public async Task<Order> Add(Order entity)
         {
-            await _context.Orders.AddAsync(entity);
-            return entity;
+            try
+            {
+                await _context.Orders.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
         }
         
         public async Task Delete(Order entity)
