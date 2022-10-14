@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cashier.Controllers
 {
+     //test push 
     [Authorize(Roles = "Admin, SuperAdmin")]
     public class ArticlesController : Controller
     {
