@@ -25,8 +25,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-//    .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddRoleManager<RoleManager<IdentityRole>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -34,10 +32,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
             .AddDefaultTokenProviders();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
-builder.Services.AddScoped<IRepository<Country>, CountryRepository>();
-builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
-builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 builder.Services.Configure<MongoDBConnection>(
                 builder.Configuration.GetSection(nameof(MongoDBConnection)));
@@ -46,24 +40,6 @@ builder.Services.AddStackExchangeRedisCache(options => {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
     options.InstanceName = "Cashier_";
 });
-
-//builder.Services.AddSingleton<IMongoDBConnection>(sp =>
-//    sp.GetRequiredService<IOptions<MongoDBConnection>>().Value);
-//builder.Services.AddSingleton<IMongoDBConnection, MongoDBConnection>();
-
-//builder.Services.AddSingleton<IMongoClient>(s =>
-//        new MongoClient(builder.Configuration.GetValue<string>("MongoDBDatabaseSettings:ConnectionString")));
-
-
-//builder.Services.Configure<MongoDBConnection>(
-//                builder.Configuration.GetSection(nameof(MongoDBConnection)));
-
-//builder.Services.AddSingleton<IMongoDBConnection>(sp =>
-//    sp.GetRequiredService<IOptions<MongoDBConnection>>().Value);
-
-//builder.Services.AddSingleton<IMongoClient>(s =>
-//        new MongoClient(builder.Configuration.GetValue<string>("MongoDBDatabaseSettings:ConnectionString")));
-
 
 builder.Services.Configure<MongoDBConnection>(
     builder.Configuration.GetSection("MongoDBConnection")
@@ -76,7 +52,10 @@ builder.Services.AddSingleton<IMongoDatabase>(options => {
 });
 
 builder.Services.AddTransient<IArticleImageRepository, ArticleImageRepository>();
-
+builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
+builder.Services.AddScoped<IRepository<Country>, CountryRepository>();
+builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 
 // NLog: Setup NLog for Dependency injection

@@ -1,4 +1,4 @@
-﻿using Cashier.Models;
+﻿using Cashier.Models.Orders;
 using Entities.Orders;
 using Entities.User;
 using InfrastructureSql.Interfaces;
@@ -28,13 +28,20 @@ namespace Cashier.Controllers
         
         public async Task<IActionResult> Index()
         {
-            var data = await _reportRepository.GetOrdersReport("aleksandra@admin.com", DateTime.UtcNow.AddDays(-10), DateTime.UtcNow.AddDays(10));
-            var data2 = await _reportRepository.GetOrdersReport(User.Identity.Name, null, null);
-            var data3 = await _reportRepository.GetOrdersReport(User.Identity.Name, DateTime.UtcNow, null);
-            return View();
+            var userId = _userManager.GetUserId(User);
+            
+            var allOrders = await _orderRepository.GetAll() ?? new List<Order>();
+            var ordersPerUser = allOrders.Where(x => x.UserId == userId).ToList();
+            var ordersViewModel = ordersPerUser.Select(x => new OrderViewModel
+            {
+                Id = x.Id,
+                Total = x.OrderDetails.Sum(y => y.Count * y.Price),
+                Description = String.Concat(x.OrderDetails.Select(z => z.Article.Name + ", " + z.Count + "x" + z.Price + " ")),
+            });
+            return View(ordersViewModel);
         }
 
-        public IActionResult AddOrder()
+        public async Task<IActionResult> AddOrder()
         {
             return View();
         }
