@@ -113,6 +113,7 @@ namespace Cashier.Controllers
 
 
                 }
+
                 return View("Article", articleViewModel);
             }
             catch (Exception ex)

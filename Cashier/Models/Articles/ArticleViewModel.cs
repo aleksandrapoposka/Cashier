@@ -4,6 +4,7 @@ namespace Cashier.Models.Articles
 {
     public class ArticleViewModel : IValidatableObject
     {
+
         public long Id { get; set; }
         [Required]
         public string Name { get; set; }
