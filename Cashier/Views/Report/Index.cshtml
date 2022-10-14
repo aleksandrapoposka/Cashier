@@ -1,0 +1,78 @@
+﻿<h1>Report</h1>
+<div class="row mb-5">
+    @*Filters go here*@
+    <div class="col-4">
+        <input type="date" id="dateFrom" name="dateFrom" />
+    </div>
+    <div class="col-4">
+        <input type="date" id="dateTo" name="dateTo" />
+    </div>
+    <div class="col-4">
+        <button class="btn btn-primary" onclick="filterData()">Filter</button>
+    </div>
+</div>
+<div class="row">
+    <table class="table" id="reportData">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Article name</th>
+                <th scope="col">Article description</th>
+                <th scope="col">Count</th>
+                <th scope="col">Price</th>
+                <th scope="col">Total value</th>
+                <th scope="col">Cashier</th>
+            </tr>
+        </thead>
+        <tbody id="reportDataBody">            
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    function filterData(){
+        let dateFrom = document.getElementById("dateFrom").value;
+        let dateTo = document.getElementById("dateTo").value;
+
+        if(!dateFrom || !dateTo){
+            alert("Please select date range");
+            return;
+        }
+
+        let dateFromMoment = moment(dateFrom)
+        let dateToMoment = moment(dateTo);
+        if(dateFromMoment > dateToMoment){
+            alert("DateFrom cannot be bigger than DateTo");
+            return;
+        }
+        
+        console.log(dateFrom, dateTo);
+        axios.get(`@Url.Action("GetReportData", "Report")?dateFrom=${dateFrom}&dateTo=${dateTo}`)
+            .then(res => {
+                const reportData = res.data;
+                if (reportData.length == 0){
+                    alert("No data");
+                    document.getElementById("reportDataBody").innerHTML = "";
+                    return;
+                }
+
+                for (let i = 0; i < reportData.length; i++){
+                    let row = reportData[i];
+                    let trHtml = `
+                        <tr>
+                            <td scope="col">${i + 1}</td>
+                            <td scope="col">${row.name}</td>
+                            <td scope="col">${row.description}</td>
+                            <td scope="col">${row.count}</td>
+                            <td scope="col">${row.price}</td>
+                            <td scope="col">${row.totalValue}</td>
+                            <td scope="col">${row.firstName} ${row.lastName}</td>
+                        </tr>
+                    `;
+                   document.getElementById("reportDataBody").insertAdjacentHTML("beforeend", trHtml);
+                }
+            })
+    }
+
+</script>
