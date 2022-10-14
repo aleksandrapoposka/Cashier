@@ -37,7 +37,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
 builder.Services.AddScoped<IRepository<Country>, CountryRepository>();
 builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
-
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 builder.Services.Configure<MongoDBConnection>(
                 builder.Configuration.GetSection(nameof(MongoDBConnection)));

@@ -4,6 +4,7 @@ using Entities.User;
 using InfrastructureSql.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver.Linq;
 
 namespace Cashier.Controllers
 {
@@ -12,17 +13,24 @@ namespace Cashier.Controllers
         private readonly ILogger<OrdersController> _logger;
         private readonly IRepository<Order> _orderRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-        
-        public OrdersController(ILogger<OrdersController> logger, IRepository<Order> orderRepository, UserManager<ApplicationUser> userManager)
+        private readonly IReportRepository _reportRepository;
+        public OrdersController(ILogger<OrdersController> logger, 
+            IRepository<Order> orderRepository,
+            UserManager<ApplicationUser> userManager,
+            IReportRepository reportRepository) 
         {
             _logger = logger;
             _orderRepository = orderRepository;
             _userManager = userManager;
+            _reportRepository = reportRepository;
         }
 
         
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var data = await _reportRepository.GetOrdersReport("aleksandra@admin.com", DateTime.UtcNow.AddDays(-10), DateTime.UtcNow.AddDays(10));
+            var data2 = await _reportRepository.GetOrdersReport(User.Identity.Name, null, null);
+            var data3 = await _reportRepository.GetOrdersReport(User.Identity.Name, DateTime.UtcNow, null);
             return View();
         }
 
