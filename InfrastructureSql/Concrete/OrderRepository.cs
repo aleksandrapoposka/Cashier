@@ -20,18 +20,9 @@ namespace InfrastructureSql.Concrete
         
         public async Task<Order> Add(Order entity)
         {
-            try
-            {
-                await _context.Orders.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
+            await _context.Orders.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
         
         public async Task Delete(Order entity)
@@ -41,12 +32,22 @@ namespace InfrastructureSql.Concrete
 
         public async Task<List<Order>> GetAll()
         {
-            return await _context.Orders.ToListAsync();
+            return 
+                await _context
+                        .Orders
+                        .Include(x => x.OrderDetails)
+                        .ThenInclude(x => x.Article)
+                        .ToListAsync();
         }
         
         public async Task<Order> GetById(long id)
         {
-            return await _context.Orders.FirstOrDefaultAsync(x => x.Id == id);
+            return 
+                await _context
+                        .Orders
+                        .Include(x => x.OrderDetails)
+                        .ThenInclude(x => x.Article)
+                        .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Order> Update(Order entity)

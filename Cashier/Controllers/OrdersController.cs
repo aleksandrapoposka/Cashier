@@ -1,9 +1,10 @@
-﻿using Cashier.Models;
+﻿using Cashier.Models.Orders;
 using Entities.Orders;
 using Entities.User;
 using InfrastructureSql.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver.Linq;
 
 namespace Cashier.Controllers
 {
@@ -12,21 +13,35 @@ namespace Cashier.Controllers
         private readonly ILogger<OrdersController> _logger;
         private readonly IRepository<Order> _orderRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-        
-        public OrdersController(ILogger<OrdersController> logger, IRepository<Order> orderRepository, UserManager<ApplicationUser> userManager)
+        private readonly IReportRepository _reportRepository;
+        public OrdersController(ILogger<OrdersController> logger, 
+            IRepository<Order> orderRepository,
+            UserManager<ApplicationUser> userManager,
+            IReportRepository reportRepository) 
         {
             _logger = logger;
             _orderRepository = orderRepository;
             _userManager = userManager;
+            _reportRepository = reportRepository;
         }
 
         
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var userId = _userManager.GetUserId(User);
+            
+            var allOrders = await _orderRepository.GetAll() ?? new List<Order>();
+            var ordersPerUser = allOrders.Where(x => x.UserId == userId).ToList();
+            var ordersViewModel = ordersPerUser.Select(x => new OrderViewModel
+            {
+                Id = x.Id,
+                Total = x.OrderDetails.Sum(y => y.Count * y.Price),
+                Description = String.Concat(x.OrderDetails.Select(z => z.Article.Name + ", " + z.Count + "x" + z.Price + " ")),
+            });
+            return View(ordersViewModel);
         }
 
-        public IActionResult AddOrder()
+        public async Task<IActionResult> AddOrder()
         {
             return View();
         }

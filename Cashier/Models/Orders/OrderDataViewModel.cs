@@ -1,4 +1,4 @@
-﻿namespace Cashier.Models
+﻿namespace Cashier.Models.Orders
 {
     public class OrderDataViewModel
     {
