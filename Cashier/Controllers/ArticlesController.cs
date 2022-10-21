@@ -1,15 +1,12 @@
 ﻿using Cashier.Helpers;
 using Cashier.Models.Articles;
-using DataAccess.Data;
 using Entities;
 using Entities.Articles;
-using InfrastructureMongoDB;
-using InfrastructureSql.Concrete;
 using InfrastructureSql.Interfaces;
+using InfrastructureStorageAccount.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace Cashier.Controllers
 {
@@ -19,19 +16,22 @@ namespace Cashier.Controllers
     {
         private readonly ILogger<ArticlesController> _logger;
         private readonly IRepository<Article> _articleRepository;
-        private readonly IArticleImageRepository _articleImageRepository;
         private readonly IRepository<Country> _countryRepository;
+        private readonly IBlobRepository _blobRepository;
+        private readonly ITableRepository _tableRepository;
 
         public ArticlesController(
             ILogger<ArticlesController> logger,
             IRepository<Article> articleRepository,
-            IArticleImageRepository articleImageRepository,
-            IRepository<Country> countryRepository)
+            IRepository<Country> countryRepository,
+            IBlobRepository blobRepository,
+            ITableRepository tableRepository)
         {
             _logger = logger;
             _articleRepository = articleRepository;
-            _articleImageRepository = articleImageRepository;
             _countryRepository = countryRepository;
+            _blobRepository = blobRepository;
+            _tableRepository = tableRepository;
         }
         
         public async Task<IActionResult> Index()
@@ -62,7 +62,7 @@ namespace Cashier.Controllers
                     Name = article.Name,
                     Price = article.Price,
                     Stock = article.Stock,
-                    ImgSrc = "data:image;base64," + Convert.ToBase64String(_articleImageRepository.Get(article.Id).Image)
+                    ImgSrc = _tableRepository.GetImageUri(article.Id)
                 };
                 articlesViewModelList.Add(articleViewModel);
             }
@@ -99,20 +99,13 @@ namespace Cashier.Controllers
             try
             {
                 _logger.LogInformation($"ArticlesController.GetArticle id={id}");
-                var article = await _articleRepository.GetById(id);
-                var articleImg = _articleImageRepository.Get(id);
+                var article = await _articleRepository.GetById(id);                
 
                 var articleViewModel = new ArticleViewModel();
                 if (article != null)
                 {
                     articleViewModel = ArticleMapper.ToArticleViewModel(article);
-
-                    if (articleImg != null)
-                    { 
-                        articleViewModel.ImgSrc = Convert.ToBase64String(articleImg.Image); 
-                    }
-
-
+                    articleViewModel.ImgSrc = _tableRepository.GetImageUri(article.Id);
                 }
 
                 return View("Article", articleViewModel);
@@ -156,29 +149,25 @@ namespace Cashier.Controllers
                 }
                 var allowedExtension = new List<string>() { "png", "jpg", "jpeg", "gif" };
                 var extension = Path.GetExtension(articleImage.FileName).Substring(1);
+
                 if (!allowedExtension.Contains(extension))
                 {
                     //return extension error here
                 }
 
-                var articleImg = _articleImageRepository.Get(articleId);
-                if (articleImg != null)
+                string imagePath = await _blobRepository.UploadBlob(articleImage);
+
+                if (string.IsNullOrEmpty(_tableRepository.GetImageUri(articleId)))
                 {
-                    //return no duplicate images allowed
+                   // return no duplicate images allowed
                 }
-                Stream stream = articleImage.OpenReadStream();
-                using (var memoryStream = new MemoryStream())
+
+                await _tableRepository.InsertArticleImage(new ArticleImage
                 {
-                    stream.CopyTo(memoryStream);
-                    var articleImageArray = memoryStream.ToArray();
-                    _articleImageRepository.Create(new ArticleImage
-                    {
-                        ArticleId = articleId,
-                        Image = articleImageArray,
-                        ModifiedBy = User.Identity.Name,
-                        ModifiedOn = DateTime.UtcNow
-                    });
-                }
+                    ArticleId = articleId,
+                    Image = imagePath
+                });
+
 
                 return RedirectToAction("Index");
             }
@@ -200,7 +189,7 @@ namespace Cashier.Controllers
                     //return error
                 }
                 var articleViewModel = ArticleMapper.ToArticleViewModel(articleEntity);
-                articleViewModel.ImgSrc = "data:image;base64," + Convert.ToBase64String(_articleImageRepository.Get(id).Image);
+                articleViewModel.ImgSrc = _tableRepository.GetImageUri(articleEntity.Id);
                 return View(articleViewModel);
                 
             }

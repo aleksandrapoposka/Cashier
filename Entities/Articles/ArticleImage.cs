@@ -1,24 +1,29 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Entities.BaseMongoEntity;
+﻿using Azure.Data.Tables;
+using Azure;
 
 namespace Entities.Articles
 {
    
-        public class ArticleImage : MongoBaseEntity
-        {
-            [BsonElement("articleId")]
-            public long ArticleId { get; set; } = 0;
-            
-            [BsonElement("image")]
-            [BsonRepresentation(BsonType.Binary)]
-            public byte[] Image { get; set; }
+        public class ArticleImage : ITableEntity
+        {       
+        
+            public ArticleImage()
+            {
+                PartitionKey = nameof(ArticleId);
+                RowKey = Guid.NewGuid().ToString();
+                Timestamp = DateTime.Now;
+            }
+            public long ArticleId { get; set; }        
+           
+            public string Image { get; set; }
 
-        }
+            public string PartitionKey { get; set; }
+
+            public string RowKey { get; set; }
+
+            public DateTimeOffset? Timestamp { get; set; }
+
+            public ETag ETag { get; set; }
+    }
     
 }

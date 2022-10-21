@@ -1,14 +1,21 @@
 using DataAccess;
 using DataAccess.Data;
+using DataAccess.Interfaces;
+using DataAccess.Models;
 using Entities;
 using Entities.Articles;
 using Entities.Orders;
 using Entities.User;
 using InfrastructureMongoDB;
+using InfrastructureSql;
 using InfrastructureSql.Concrete;
 using InfrastructureSql.Interfaces;
+using InfrastructureStorageAccount;
+using InfrastructureStorageAccount.Concrete;
+using InfrastructureStorageAccount.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using NLog;
@@ -21,8 +28,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -30,33 +37,21 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultUI()
             .AddDefaultTokenProviders();
+
 builder.Services.AddControllersWithViews();
-
-
-builder.Services.Configure<MongoDBConnection>(
-                builder.Configuration.GetSection(nameof(MongoDBConnection)));
 
 builder.Services.AddStackExchangeRedisCache(options => {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
     options.InstanceName = "Cashier_";
 });
 
-builder.Services.Configure<MongoDBConnection>(
-    builder.Configuration.GetSection("MongoDBConnection")
-);
+// Configure Storage Account
+builder.Services.Configure<StorageAccountConnection>(builder.Configuration.GetSection(nameof(StorageAccountConnection)));
+builder.Services.AddSingleton<IStorageAccountConnection>(config => config.GetRequiredService<IOptions<StorageAccountConnection>>().Value);
 
-builder.Services.AddSingleton<IMongoDatabase>(options => {
-    var settings = builder.Configuration.GetSection("MongoDBConnection").Get<MongoDBConnection>();
-    var client = new MongoClient(settings.ConnectionString);
-    return client.GetDatabase(settings.DatabaseName);
-});
-
-builder.Services.AddTransient<IArticleImageRepository, ArticleImageRepository>();
-builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
-builder.Services.AddScoped<IRepository<Country>, CountryRepository>();
-builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
-builder.Services.AddScoped<IReportRepository, ReportRepository>();
-
+// Register Repositories
+builder.Services.RegisterSqlRepositories();
+builder.Services.RegisterAzureRepositories();
 
 // NLog: Setup NLog for Dependency injection
 builder.Logging.ClearProviders();

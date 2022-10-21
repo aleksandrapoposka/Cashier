@@ -4,6 +4,7 @@ using Entities;
 using Entities.Articles;
 using InfrastructureMongoDB;
 using InfrastructureSql.Interfaces;
+using InfrastructureStorageAccount.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -14,15 +15,17 @@ namespace xUnitTests
     {
         private readonly Mock<ILogger<ArticlesController>> mockLogger;
         private readonly Mock<IRepository<Article>> mockArticleRepository;
-        private readonly Mock<IArticleImageRepository> mockArticleImageRepository;
         private readonly Mock<IRepository<Country>> mockCountryRepository;
+        private readonly Mock<IBlobRepository> mockBlobRepository;
+        private readonly Mock<ITableRepository> mockTableRepository;
 
         public TestArticles()
         {
             mockLogger = new Mock<ILogger<ArticlesController>>();
             mockArticleRepository = new Mock<IRepository<Article>>();
-            mockArticleImageRepository = new Mock<IArticleImageRepository>();
             mockCountryRepository = new Mock<IRepository<Country>>();
+            mockBlobRepository = new Mock<IBlobRepository>();
+            mockTableRepository = new Mock<ITableRepository>();
         }
         [Fact]
         public async Task GetArticleById_Sucess()
@@ -32,8 +35,9 @@ namespace xUnitTests
             var controller = new ArticlesController(
                 mockLogger.Object,
                 mockArticleRepository.Object,
-                mockArticleImageRepository.Object,
-                mockCountryRepository.Object);
+                mockCountryRepository.Object,
+                mockBlobRepository.Object,
+                mockTableRepository.Object);
 
             var id = 1;
             var article = new Article
@@ -45,11 +49,10 @@ namespace xUnitTests
             var articleImg = new ArticleImage
             {
                 ArticleId = 1,
-                Image = new byte[1]
+                Image = ""
             };
 
             mockArticleRepository.Setup(t => t.GetById(id)).Returns(Task.FromResult(article));
-            mockArticleImageRepository.Setup(t => t.Get(id)).Returns(articleImg);
 
             // Act
 
@@ -66,8 +69,9 @@ namespace xUnitTests
             var controller = new ArticlesController(
                 mockLogger.Object,
                 mockArticleRepository.Object,
-                mockArticleImageRepository.Object,
-                mockCountryRepository.Object);
+                mockCountryRepository.Object,
+                mockBlobRepository.Object,
+                mockTableRepository.Object);
             var articleList = new List<Article>();
             var id = 1;
             var article = new Article
@@ -78,12 +82,11 @@ namespace xUnitTests
             var articleImg = new ArticleImage
             {
                 ArticleId = 1,
-                Image = new byte[1]
+                Image = ""
             };
             articleList.Add(article);   
 
             mockArticleRepository.Setup(t => t.GetAll()).Returns(Task.FromResult(articleList));
-            mockArticleImageRepository.Setup(t => t.Get(id)).Returns(articleImg);
 
             // Act
 
@@ -101,8 +104,9 @@ namespace xUnitTests
             var controller = new ArticlesController(
                 mockLogger.Object,
                 mockArticleRepository.Object,
-                mockArticleImageRepository.Object,
-                mockCountryRepository.Object);
+                mockCountryRepository.Object,
+                mockBlobRepository.Object,
+                mockTableRepository.Object);
 
             var id = 1;
             var article = new Article
@@ -114,11 +118,10 @@ namespace xUnitTests
             var articleImg = new ArticleImage
             {
                 ArticleId = 1,
-                Image = new byte[1]
+                Image = ""
             };
 
             mockArticleRepository.Setup(t => t.GetById(id)).Returns(Task.FromResult(article));
-            mockArticleImageRepository.Setup(t => t.Get(id)).Returns(articleImg);
 
             // Act
 

@@ -30,6 +30,7 @@
     <ProjectReference Include="..\InfrastructureMongoDB\InfrastructureMongoDB.csproj" />
     <ProjectReference Include="..\InfrastructureRedis\InfrastructureRedis.csproj" />
     <ProjectReference Include="..\InfrastructureSql\InfrastructureSql.csproj" />
+    <ProjectReference Include="..\InfrastructureStorageAccount\InfrastructureStorageAccount.csproj" />
   </ItemGroup>
 
 </Project>
