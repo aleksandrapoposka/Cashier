@@ -1,4 +1,5 @@
 using Cashier.Controllers;
+using Cashier.Loggers;
 using Cashier.Models.Articles;
 using Entities;
 using Entities.Articles;
@@ -13,7 +14,7 @@ namespace xUnitTests
 {
     public class TestArticles
     {
-        private readonly Mock<ILogger<ArticlesController>> mockLogger;
+        private readonly Mock<IMetricsClient> mockLogger;
         private readonly Mock<IRepository<Article>> mockArticleRepository;
         private readonly Mock<IRepository<Country>> mockCountryRepository;
         private readonly Mock<IBlobRepository> mockBlobRepository;
@@ -21,7 +22,7 @@ namespace xUnitTests
 
         public TestArticles()
         {
-            mockLogger = new Mock<ILogger<ArticlesController>>();
+            mockLogger = new Mock<IMetricsClient>();
             mockArticleRepository = new Mock<IRepository<Article>>();
             mockCountryRepository = new Mock<IRepository<Country>>();
             mockBlobRepository = new Mock<IBlobRepository>();

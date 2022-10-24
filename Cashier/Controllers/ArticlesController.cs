@@ -1,4 +1,5 @@
 ﻿using Cashier.Helpers;
+using Cashier.Loggers;
 using Cashier.Models.Articles;
 using Entities;
 using Entities.Articles;
@@ -14,14 +15,14 @@ namespace Cashier.Controllers
     [Authorize(Roles = "Admin, SuperAdmin")]
     public class ArticlesController : Controller
     {
-        private readonly ILogger<ArticlesController> _logger;
+        private readonly IMetricsClient _logger;
         private readonly IRepository<Article> _articleRepository;
         private readonly IRepository<Country> _countryRepository;
         private readonly IBlobRepository _blobRepository;
         private readonly ITableRepository _tableRepository;
 
         public ArticlesController(
-            ILogger<ArticlesController> logger,
+            IMetricsClient logger,
             IRepository<Article> articleRepository,
             IRepository<Country> countryRepository,
             IBlobRepository blobRepository,
@@ -41,13 +42,13 @@ namespace Cashier.Controllers
                 .ToList();
             ViewBag.Countries = countries;
 
-            _logger.LogInformation("ArticlesController.Index");
+            _logger.LogEvent("ArticlesController.Index Request");
             return View();
         }
 
         public async Task<IActionResult> GetAllArticles()
         {
-            _logger.LogInformation("ArticlesController.GetAllArticles");
+            _logger.LogEvent("ArticlesController.GetAllArticles Request");
             var articles = await _articleRepository.GetAll();
             var articlesViewModelList = new List<ArticleViewModel>();
             foreach (var article in articles)
@@ -66,7 +67,7 @@ namespace Cashier.Controllers
                 };
                 articlesViewModelList.Add(articleViewModel);
             }
-            _logger.LogInformation($"ArticlesController.GetAllArticles return: {articlesViewModelList}");
+            _logger.LogEvent($"ArticlesController.GetAllArticles Response: {articlesViewModelList}");
             return Json(articlesViewModelList);
         }
 
@@ -75,21 +76,21 @@ namespace Cashier.Controllers
         {
             try
             {
-                _logger.LogInformation($"ArticlesController.CreateNewArticle article: {article}");
+                _logger.LogEvent($"ArticlesController.CreateNewArticle Request: {article}");
                 if (ModelState.IsValid)
                 {
                     var newArticle = ArticleMapper.ToArticleEntity(article, User.Identity.Name);
 
                     await _articleRepository.Add(newArticle);
-                    _logger.LogInformation($"ArticlesController.CreateNewArticle article id={newArticle.Id} created successfuly");
+                    _logger.LogEvent($"ArticlesController.CreateNewArticle Response : Article Id={newArticle.Id} created successfuly");
                     return Json(new { success = true, description = "Article created successfully" });
                 }
-                _logger.LogInformation($"ArticlesController.CreateNewArticle validation error");
+                _logger.LogEvent($"ArticlesController.CreateNewArticle Validation Error");
                 return Json(new { success = false, description = "Article not created" });
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ArticlesController.CreateNewArticle exception", ex);
+                _logger.LogException($"ArticlesController.CreateNewArticle", ex);
                 return Json(new { success = false, description = ex.Message });
             }
         }
@@ -98,7 +99,7 @@ namespace Cashier.Controllers
         {
             try
             {
-                _logger.LogInformation($"ArticlesController.GetArticle id={id}");
+                _logger.LogEvent($"ArticlesController.GetArticle Request : Id={id}");
                 var article = await _articleRepository.GetById(id);                
 
                 var articleViewModel = new ArticleViewModel();
@@ -112,14 +113,14 @@ namespace Cashier.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ArticlesController.GetArticle exception", ex);
+                _logger.LogException($"ArticlesController.GetArticle", ex);
                 throw;
             }
         }
 
         public async Task<IActionResult> AddArticleImage(long id)
         {
-            _logger.LogInformation($"ArticlesController.AddArticleImage id={id}");
+            _logger.LogEvent($"ArticlesController.AddArticleImage Request : Id={id}");
             var article = await _articleRepository.GetById(id);
             var articleViewModel = new ArticleViewModel();
             if (article != null)
@@ -136,30 +137,30 @@ namespace Cashier.Controllers
         {
             try
             {
-                _logger.LogInformation($"ArticlesController.AddArticleImage id={articleId}");
+                _logger.LogEvent($"ArticlesController.AddArticleImage Request : Id={articleId}");
                 var article = await _articleRepository.GetById(articleId);
                 if (article == null)
                 {
-                    //return error
+                    _logger.LogEvent($"Article don't excist");
                 }
                 //validate file size
                 if (articleImage.Length > 16 * 1024 * 1024)
                 {
-                    //return error for file size
+                    _logger.LogEvent($"Image size is too big");
                 }
                 var allowedExtension = new List<string>() { "png", "jpg", "jpeg", "gif" };
                 var extension = Path.GetExtension(articleImage.FileName).Substring(1);
 
                 if (!allowedExtension.Contains(extension))
                 {
-                    //return extension error here
+                    _logger.LogEvent($"Image extension is not supported");
                 }
 
                 string imagePath = await _blobRepository.UploadBlob(articleImage);
 
                 if (string.IsNullOrEmpty(_tableRepository.GetImageUri(articleId)))
                 {
-                   // return no duplicate images allowed
+                    _logger.LogEvent($"No duplicate images allowed");                  
                 }
 
                 await _tableRepository.InsertArticleImage(new ArticleImage
@@ -173,7 +174,7 @@ namespace Cashier.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ArticlesController.AddArticleImage exception", ex);
+                _logger.LogException($"ArticlesController.AddArticleImage", ex);
                 throw ex;
             }
         }
@@ -182,11 +183,11 @@ namespace Cashier.Controllers
         {
             try
             {
-                _logger.LogInformation($"ArticlesController.EditArticle id={id}");
+                _logger.LogEvent($"ArticlesController.EditArticle Request : Id={id}");
                 var articleEntity = await _articleRepository.GetById(id);
                 if (articleEntity == null)
                 {
-                    //return error
+                    _logger.LogEvent($"Article don't excist");
                 }
                 var articleViewModel = ArticleMapper.ToArticleViewModel(articleEntity);
                 articleViewModel.ImgSrc = _tableRepository.GetImageUri(articleEntity.Id);
@@ -195,7 +196,7 @@ namespace Cashier.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ArticlesController.EditArticle id={id}");
+                _logger.LogException($"ArticlesController.EditArticle Id={id}",ex);
                 throw ex;
             }
         }
@@ -205,7 +206,7 @@ namespace Cashier.Controllers
         {
             try
             {
-                _logger.LogInformation($"ArticlesController.EditArticle id={articleViewModel.Id}");
+                _logger.LogEvent($"ArticlesController.EditArticle Request : Id={articleViewModel.Id}");
                 if (!ModelState.IsValid)
                 {
                     return View(articleViewModel);
@@ -217,7 +218,7 @@ namespace Cashier.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ArticlesController.EditArticle exception", ex);
+                _logger.LogException($"ArticlesController.EditArticle", ex);
                 throw ex;
             }
         }

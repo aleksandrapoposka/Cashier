@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{EDAD3B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{5C9D7A63-8284-48F1-A48C-000A73C68D93}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{02BEA9B0-47E1-4E81-AADA-C728541A64FF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{02BEA9B0-47E1-4E81-AADA-C728541A64FF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastucture", "Infrastucture", "{00D366BB-0D83-4C91-A3D7-5F2F0B54A379}"
 EndProject
@@ -27,7 +27,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xUnitTests", "xUnitTests\xUnitTests.csproj", "{CAAF3E04-A2B5-40C9-9FF7-1BD4573414EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfrastructureStorageAccount", "InfrastructureStorageAccount\InfrastructureStorageAccount.csproj", "{B08B4200-92DF-495D-95B7-511BD6B4CFCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfrastructureStorageAccount", "InfrastructureStorageAccount\InfrastructureStorageAccount.csproj", "{B08B4200-92DF-495D-95B7-511BD6B4CFCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessOrders", "ProcessOrders\ProcessOrders.csproj", "{4D71FD50-E3D9-4A84-BCB2-74B966C2E426}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,10 @@ Global
 		{B08B4200-92DF-495D-95B7-511BD6B4CFCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B08B4200-92DF-495D-95B7-511BD6B4CFCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B08B4200-92DF-495D-95B7-511BD6B4CFCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D71FD50-E3D9-4A84-BCB2-74B966C2E426}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D71FD50-E3D9-4A84-BCB2-74B966C2E426}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D71FD50-E3D9-4A84-BCB2-74B966C2E426}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D71FD50-E3D9-4A84-BCB2-74B966C2E426}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{91526483-401D-40E2-ADF0-30C84F3B6935} = {00D366BB-0D83-4C91-A3D7-5F2F0B54A379}
 		{CAAF3E04-A2B5-40C9-9FF7-1BD4573414EA} = {C9551FB7-A497-4CCF-9EB1-1374385F491B}
 		{B08B4200-92DF-495D-95B7-511BD6B4CFCA} = {00D366BB-0D83-4C91-A3D7-5F2F0B54A379}
+		{4D71FD50-E3D9-4A84-BCB2-74B966C2E426} = {02BEA9B0-47E1-4E81-AADA-C728541A64FF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EAC8EE15-18DD-4284-8576-16A65C69B529}

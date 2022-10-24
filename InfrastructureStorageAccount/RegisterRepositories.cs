@@ -2,11 +2,6 @@
 using InfrastructureStorageAccount.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InfrastructureStorageAccount
 {
@@ -17,7 +12,8 @@ namespace InfrastructureStorageAccount
             services.TryAddEnumerable(new[]
             {
                 ServiceDescriptor.Scoped<IBlobRepository,BlobRepository>(),
-                ServiceDescriptor.Scoped<ITableRepository,TableRepository>()
+                ServiceDescriptor.Scoped<ITableRepository,TableRepository>(),
+                ServiceDescriptor.Scoped<IQueueRepository,QueueRepository>()
             });
 
             return services;

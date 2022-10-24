@@ -2,6 +2,7 @@
 using Entities.Orders;
 using Entities.User;
 using InfrastructureSql.Interfaces;
+using InfrastructureStorageAccount.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver.Linq;
@@ -14,15 +15,18 @@ namespace Cashier.Controllers
         private readonly IRepository<Order> _orderRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IReportRepository _reportRepository;
+        private readonly IQueueRepository _queueRepository;
         public OrdersController(ILogger<OrdersController> logger, 
             IRepository<Order> orderRepository,
             UserManager<ApplicationUser> userManager,
-            IReportRepository reportRepository) 
+            IReportRepository reportRepository,
+            IQueueRepository queueRepository) 
         {
             _logger = logger;
             _orderRepository = orderRepository;
             _userManager = userManager;
             _reportRepository = reportRepository;
+            _queueRepository = queueRepository;
         }
 
         
@@ -68,6 +72,8 @@ namespace Cashier.Controllers
                     }).ToList()
                 };
                 await _orderRepository.Add(newOrder);
+                await _queueRepository.SendOrder(newOrder);
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

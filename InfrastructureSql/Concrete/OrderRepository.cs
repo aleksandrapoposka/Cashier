@@ -27,7 +27,8 @@ namespace InfrastructureSql.Concrete
         
         public async Task Delete(Order entity)
         {
-            throw new NotImplementedException();
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<Order>> GetAll()
@@ -52,7 +53,9 @@ namespace InfrastructureSql.Concrete
 
         public async Task<Order> Update(Order entity)
         {
-            throw new NotImplementedException();
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }

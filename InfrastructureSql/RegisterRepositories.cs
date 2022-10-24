@@ -17,7 +17,8 @@ namespace InfrastructureSql
                 ServiceDescriptor.Scoped<IRepository<Article>, ArticleRepository>(),
                 ServiceDescriptor.Scoped<IRepository<Country>, CountryRepository>(),
                 ServiceDescriptor.Scoped<IRepository<Order>, OrderRepository>(),
-                ServiceDescriptor.Scoped<IReportRepository, ReportRepository>()
+                ServiceDescriptor.Scoped<IReportRepository, ReportRepository>(),
+                ServiceDescriptor.Scoped<IOrderHistoryRepository, OrderHistoryRepository>()
             });
 
             return services;
